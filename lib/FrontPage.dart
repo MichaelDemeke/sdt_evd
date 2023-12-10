@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sdt_evd/Printed%201.dart';
 import 'package:sdt_evd/Printed.dart';
 import 'package:sdt_evd/Profile.dart';
 import 'package:sdt_evd/Wallet.dart';
@@ -22,7 +23,7 @@ class _FrontPageState extends State<FrontPage> {
   late fullaccess listaccess;
   final screens = [
     Wallet(),
-    Printed(),
+    Printed1(),
     Profile(),
   ];
 
@@ -74,7 +75,8 @@ class _FrontPageState extends State<FrontPage> {
 
     try {
       var response = await http.get(
-        Uri.parse("http://137.184.214.159:8000/api/v1/auth/users/me/"),
+        Uri.parse(
+            "https://evdc-api.onrender.com/api/v1/auth/users/me/"), //https://evdc-api.onrender.com/api/v1/auth/users/me/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",

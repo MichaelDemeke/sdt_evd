@@ -9,6 +9,7 @@ import 'package:sdt_evd/Voucher_Sale_Summary.dart';
 import 'package:sdt_evd/models/User.dart';
 import 'package:http/http.dart' as http;
 import 'package:sdt_evd/models/history.dart';
+import 'package:intl/intl.dart';
 
 import 'constants.dart';
 
@@ -138,9 +139,7 @@ class _PrintedState extends State<Printed> {
                               child: ListView.builder(
                                 itemCount: listhistory.data!.length,
                                 itemBuilder: (context, index) {
-                                  if (listhistory
-                                          .data![index].vouchers!.length ==
-                                      0) {
+                                  if (listhistory.data![index].quantity == 0) {
                                     return SizedBox.shrink();
                                   } else {
                                     return Padding(
@@ -182,12 +181,12 @@ class _PrintedState extends State<Printed> {
                                                                   FontWeight
                                                                       .bold,
                                                               fontSize: 20)),
-                                                      Text(
-                                                          " ${listhistory.data![index].printedDate!.substring(11, 16)}",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.blue,
-                                                              fontSize: 15)),
+                                                      // Text(
+                                                      //     "${listhistory.data![index].printedDate!.substring(11, 16)} ",
+                                                      //     style: TextStyle(
+                                                      //         color:
+                                                      //             Colors.blue,
+                                                      //         fontSize: 15)),
                                                       Row(
                                                         children: [
                                                           Icon(
@@ -197,7 +196,16 @@ class _PrintedState extends State<Printed> {
                                                                   Colors.blue,
                                                               size: 18),
                                                           Text(
-                                                              " ${listhistory.data![index].printedDate!.substring(0, 10)}",
+                                                              DateFormat.yMMMd()
+                                                                  .add_jm()
+                                                                  .format(DateTime.parse(listhistory
+                                                                          .data![
+                                                                              index]
+                                                                          .printedDate!)
+                                                                      .add(const Duration(
+                                                                          hours:
+                                                                              3))
+                                                                      .toLocal()),
                                                               style: TextStyle(
                                                                   color: Colors
                                                                       .black,
@@ -271,7 +279,7 @@ class _PrintedState extends State<Printed> {
     try {
       var response = await http.get(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/print_queues/"), //http://137.184.214.159:8000/
+            "https://evdc-api.onrender.com/api/v1/print_queues/?voucher_limit=0&skip=0"), //https://evdc-api.onrender.com/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",
@@ -287,8 +295,9 @@ class _PrintedState extends State<Printed> {
 
         print("good to go");
         print("total count is ${listhistory.totalCost}");
-        print(listhistory.count);
-        print(listhistory.data![0].vouchers![0].printSequenceNumber);
+        // print(listhistory.count);
+        print(listhistory.data![1].vouchers!.length);
+        // print(listhistory.data![0].vouchers![0].printSequenceNumber);
 
         return listhistory;
       }

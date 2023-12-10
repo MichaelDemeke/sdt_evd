@@ -5,8 +5,10 @@ import 'package:sdt_evd/Bluetooth.dart';
 import 'package:sdt_evd/Printed.dart';
 import 'package:sdt_evd/models/Fullaccess.dart';
 import 'package:sdt_evd/models/User.dart';
+import 'package:sdt_evd/models/fulluser.dart';
 import 'package:sdt_evd/models/history.dart';
 import 'package:sdt_evd/models/quantity.dart';
+import 'package:sdt_evd/models/remember.dart';
 
 import 'models/historydet.dart';
 
@@ -95,4 +97,27 @@ void setdetailhistory(List<quantity> x) {
 
 get getdetailhistory {
   return dethis;
+}
+//##################################################################
+
+late fulluser userx;
+
+void setfulluser(fulluser x) {
+  userx = x;
+}
+
+get getfulluser {
+  return userx;
+}
+
+//##############################################################33
+
+late rememberMe remme;
+
+void setRememberMe(rememberMe x) {
+  remme = x;
+}
+
+get getremmberme {
+  return remme;
 }

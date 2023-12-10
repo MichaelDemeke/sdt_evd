@@ -86,7 +86,8 @@ class _MyAppState extends State<MyApp> {
 
     try {
       var response = await http.get(
-        Uri.parse("http://137.184.214.159:8000/api/v1/auth/users/me/"),
+        Uri.parse(
+            "https://evdc-api.onrender.com/api/v1/auth/users/me/"), //https://evdc-api.onrender.com/api/v1/auth/users/me/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",

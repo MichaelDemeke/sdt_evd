@@ -1,9 +1,12 @@
 import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:bluetooth_print/bluetooth_print.dart';
-import 'package:bluetooth_print/bluetooth_print_model.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:bluetooth_print/bluetooth_print_model.dart' as bluetooth_print;
 import 'package:get/utils.dart';
 import 'constants.dart';
+//import 'package:beacon_flutter/beacon_flutter.dart';
 
 class bluetooth extends StatefulWidget {
   const bluetooth({super.key});
@@ -16,15 +19,37 @@ class _bluetoothState extends State<bluetooth> {
   BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
   late Future<bool> isConnected;
   late bool _connected;
+  //final _beaconPlugin = Beacon();
+  static const bluetoothscanner = MethodChannel('michael.com/bluetooth');
+
+  late bluetooth_print.BluetoothDevice _currentdevice;
+  List<bluetooth_print.BluetoothDevice> _device = [];
+  String _deviceMsg = "";
+
+  Future<void> _scanBluetoothDevices() async {
+    try {
+      final List<BluetoothDevice> devices =
+          await bluetoothscanner.invokeMethod('scanBluetoothDevices');
+      setState(() {
+        _device = devices.cast<bluetooth_print.BluetoothDevice>();
+      });
+    } catch (e) {
+      print('Error scanning Bluetooth devices: $e');
+    }
+  }
 
   @override
   void initState() {
+    _scanBluetoothDevices();
+
+    print("print copy");
     //  checkifdeviceisconnected();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         initPrinter();
       },
     );
+
     // var _flutterBlue = BluetoothPrint.instance;
     // _flutterBlue.isConnected.then((value) {
     //   //Do your processing
@@ -71,10 +96,6 @@ class _bluetoothState extends State<bluetooth> {
     return false;
   }
 
-  late BluetoothDevice _currentdevice;
-  List<BluetoothDevice> _device = [];
-  String _deviceMsg = "";
-
   Future<void> initPrinter() async {
     bluetoothPrint.startScan(timeout: Duration(seconds: 4));
 
@@ -82,7 +103,6 @@ class _bluetoothState extends State<bluetooth> {
     var subscription = bluetoothPrint.scanResults.listen((event) {
       if (!mounted) return;
       setState(() {
-        //  _device.addAll(event);
         _device = event;
         // setdevices(event);
       });
@@ -104,6 +124,63 @@ class _bluetoothState extends State<bluetooth> {
           break;
       }
     });
+  }
+
+//   void startscan2(){
+//     print('list of paired devices');
+// flutterBlue.connectedDevices.asStream().listen((paired) {
+//   print('paired device: $paired');
+// });
+// setState(() {
+//   _isScanning = true;
+// });
+// scanSubscription =
+//     flutterBlue.scan(timeout: Duration(seconds: 20)).listen((scanResult) {
+//   var device = scanResult.device;
+//   print('${device.name} found! rssi: ${scanResult.rssi}');
+// }, onDone: _stopScan);
+// scanSubscription.cancel();
+
+// }
+
+  void startscan() async {
+    print("inside the start scan ");
+    try {
+      // listen to scan results
+// Note: `onScanResults` only returns live scan results, i.e. during scanning
+// Use: `scanResults` if you want live scan results *or* the previous results
+      var subscription = FlutterBluePlus.onScanResults.listen(
+        (results) {
+          if (results.isNotEmpty) {
+            print("inside the results");
+            ScanResult r = results.last;
+            // the most recently found device
+
+            print(
+                '${r.device.remoteId}: "${r.advertisementData.advName}" found!');
+          } else {
+            print("results is empty");
+          }
+        },
+      );
+
+// Wait for Bluetooth enabled & permission granted
+// In your real app you should use `FlutterBluePlus.adapterState.listen` to handle all states
+      await FlutterBluePlus.adapterState
+          .where((val) => val == BluetoothAdapterState.on)
+          .first;
+
+// Start scanning
+      await FlutterBluePlus.startScan();
+
+// Stop scanning
+      await FlutterBluePlus.stopScan();
+
+// cancel to prevent duplicate listeners
+      subscription.cancel();
+    } catch (e) {
+      print("The error is ${e}");
+    }
   }
 
   @override
@@ -162,7 +239,8 @@ class _bluetoothState extends State<bluetooth> {
                   ),
                 ),
                 onTap: () async {
-                  initPrinter();
+                  startscan();
+                  // initPrinter();
                 },
               )),
             ),

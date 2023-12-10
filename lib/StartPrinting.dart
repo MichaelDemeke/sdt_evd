@@ -153,7 +153,7 @@ class startPrint {
     print("the access token ${lo.accessToken}");
     try {
       var response = await http.post(
-        Uri.parse("http://137.184.214.159:8000/api/v1/print_queues/"),
+        Uri.parse("https://evdc-api.onrender.com/api/v1/print_queues/"),
         body: json.encode({"face_value": faceValue, "quantity": quantity}),
         headers: {
           'Content-type': 'application/json',

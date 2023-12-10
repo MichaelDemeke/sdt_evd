@@ -244,13 +244,6 @@ class _OrderState extends State<Order> {
                             "Error");
                       }
                       print("in on tap");
-
-                      // if (logic(amount)) {
-                      //   print("inside ok");
-                      //   _showMyDialog(
-                      //       "You can't print this amount you have reached your limit",
-                      //       "Error");
-                      // }
                       print(amount);
                       checkifdeviceisconnected();
                       if (limit <= amount) {
@@ -500,7 +493,7 @@ class _OrderState extends State<Order> {
     try {
       var response = await http.post(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/print_queues/"), // http://137.184.214.159:8000/
+            "https://evdc-api.onrender.com/api/v1/print_queues/"), // https://evdc-api.onrender.com/
         body: json.encode({"face_value": faceValue, "quantity": quantity}),
         headers: {
           'Content-type': 'application/json',
@@ -531,9 +524,7 @@ class _OrderState extends State<Order> {
         return false;
       }
     } catch (e) {
-      _showMyDialog(
-          "There seems to be an unknown error check if you are connected to the internet",
-          "Error");
+      _showMyDialog("There seems to be an unknown error ${e}", "Error");
       print(" mmmmmm   Error ${e}");
       return false;
     }
@@ -546,7 +537,8 @@ class _OrderState extends State<Order> {
 
     try {
       var response = await http.get(
-        Uri.parse("http://137.184.214.159:8000/api/v1/auth/users/me/"),
+        Uri.parse(
+            "https://evdc-api.onrender.com/api/v1/auth/users/me/"), // https://evdc-api.onrender.com/api/v1/auth/users/me/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",
@@ -584,7 +576,7 @@ class _OrderState extends State<Order> {
     try {
       var response = await http.get(
         Uri.parse(
-            "http://137.184.214.159:8000/api/v1/vouchers/summary/?status=wallet"),
+            "https://evdc-api.onrender.com/api/v1/vouchers/summary/?status=wallet"), //https://evdc-api.onrender.com/api/v1/vouchers/summary/?status=wallet
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",

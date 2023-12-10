@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:sdt_evd/Printed.dart';
 import 'package:sdt_evd/models/checked.dart';
 import 'package:sdt_evd/models/history.dart' as history;
@@ -30,6 +31,7 @@ class _PrinteddetailState extends State<Printeddetail> {
   List<bool> checked = [];
   bool ischeched = false;
   bool clear = false;
+  int _limit = 20;
   int _currentMax = 0;
   final _controller = ScrollController();
 
@@ -53,19 +55,33 @@ class _PrinteddetailState extends State<Printeddetail> {
 
   bool round = false;
 
+  late bool _isLastPage; // bool value
+  late int _pageNumber;
+  late bool _error;
+  late bool _loading;
+  final int _numberOfPostsPerRequest = 10;
+  final int _nextPageTrigger = 3;
+
   @override
   void initState() {
+    _pageNumber = 0;
+    _isLastPage = false;
+    _loading = true;
+    _error = false;
     fetchdeatailData = _sendrequest();
-    // _controller.addListener(_scrollListener);
+    _controller.addListener(_scrollListener);
+    checked = List<bool>.generate(widget.general.quantity!, (_) => false);
     super.initState();
   }
 
-  // _scrollListener() {
-  //   if (_controller.position.pixels == _controller.position.maxScrollExtent) {
-  //     print("it is scrolling ");
-  //     _sendrequest();
-  //   }
-  // }
+  _scrollListener() {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      print("it is scrolling ");
+      if (_isLastPage == false) {
+        _sendrequest();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,17 +154,17 @@ class _PrinteddetailState extends State<Printeddetail> {
             ),
             onTap: () async {
               if (ischeched) {
-                // setState(() {
-                //   detailhistory.vouchers!.forEach((element) {
-                //     reprint.add(element.id);
-                //   });
-                // });
-
                 setState(() {
                   historychecked.forEach((element) {
                     element.datachecked = true;
                   });
                 });
+                if (_isLastPage == false) {
+                  setState(() {
+                    _limit = widget.general.quantity!;
+                  });
+                  _sendrequest();
+                }
               }
 
               if (areAllFalse(checked))
@@ -297,7 +313,7 @@ class _PrinteddetailState extends State<Printeddetail> {
                 return Expanded(
                   child: ListView.builder(
                     itemCount: historychecked.length,
-                    // controller: _controller,
+                    controller: _controller,
                     itemBuilder: (context, index) {
                       return Container(
                           width: MediaQuery.of(context).size.width * 0.55,
@@ -323,7 +339,13 @@ class _PrinteddetailState extends State<Printeddetail> {
                                       const EdgeInsets.fromLTRB(15, 15, 0, 0),
                                   child: Column(
                                     children: [
-                                      Text("${detailhistory.printedDate}",
+                                      Text(
+                                          DateFormat.yMMMd().add_jm().format(
+                                              DateTime.parse(detailhistory
+                                                      .printedDate!)
+                                                  .add(const Duration(hours: 3))
+                                                  .toLocal()),
+                                          //"${detailhistory.printedDate}",
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 15)),
@@ -530,10 +552,12 @@ class _PrinteddetailState extends State<Printeddetail> {
     User lo = userget;
     historydetail extracthistory;
     print("the access token ${lo.accessToken}");
+    print("The current max is ${_currentMax}");
+
     try {
       var response = await http.get(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/print_queues/${widget.general.id}?voucher_skip=0&voucher_limit=${widget.general.quantity}"), //https://evdc-api.onrender.com/
+            "https://evdc-api.onrender.com/api/v1/print_queues/${widget.general.id}?voucher_skip=${_currentMax}&voucher_limit=${_limit}"), //https://evdc-api.onrender.com/
         // https://evdc-api.onrender.com/api/v1/print_queues/${widget.general.id}?voucher_skip=${_currentMax}&voucher_limit=10
         headers: {
           'Content-type': 'application/json',
@@ -546,41 +570,48 @@ class _PrinteddetailState extends State<Printeddetail> {
       if (response.statusCode == 200) {
         setState(() {
           // if (round) {
-          //   extracthistory = historydetail.fromJson(data) as historydetail;
-          //   print(
-          //       "The detail history length before  ${detailhistory.vouchers!.length}");
+          print("before extract");
 
-          //   print(
-          //       "The extract history length ${extracthistory.vouchers!.length}"); //extracthistory.vouchers![extracthistory.vouchers!.length - 1].id
-          //   detailhistory.vouchers!
-          //       .addAll(extracthistory.vouchers as Iterable<Vouchers>);
-          //   print(
-          //       "The detail history length after  ${detailhistory.vouchers!.length}"); //detailhistory.vouchers![detailhistory.vouchers!.length - 1].id
-          // } else {
+          extracthistory = historydetail.fromJson(data) as historydetail;
           detailhistory = historydetail.fromJson(data) as historydetail;
-          //}
-          // _currentMax = detailhistory.vouchers!.length;
+          print("After extract");
+          //   _isLastPage = extracthistory.vouchers![extracthistory.vouchers!.length - 1].printSequenceNumber! == widget.general.quantity!;
+
+          extracthistory.vouchers!.sort((a, b) =>
+              a.printSequenceNumber!.compareTo(b.printSequenceNumber as num));
+
+          print("sorting");
+          for (int i = 0; i < extracthistory.vouchers!.length; i++) {
+            historychecked.add(hischecked(
+                data: extracthistory.vouchers![i], datachecked: false));
+            print("add to history");
+          }
+          // if (round) {
+          //   checked = List<bool>.generate(
+          //       extracthistory.vouchers!.length, (_) => false);
+          // } else {
+          //   checked.addAll(List<bool>.generate(
+          //       extracthistory.vouchers!.length, (_) => false));
+          //
+
+          _pageNumber++;
         });
 
-        // setState(() {
-        //   round = true;
-        // });
+        if (historychecked.length == widget.general.quantity) {
+          setState(() {
+            _isLastPage = true;
+          });
+        }
+
+        print("is last page ${_isLastPage}");
+        setState(() {
+          _currentMax = historychecked.length;
+        });
 
         print("good to go");
         print("total count is ${widget.general.quantity}");
 
-        setState(() {
-          detailhistory.vouchers!.sort((a, b) =>
-              a.printSequenceNumber!.compareTo(b.printSequenceNumber as num));
-
-          checked =
-              List<bool>.generate(detailhistory.vouchers!.length, (_) => false);
-
-          for (int i = 0; i < detailhistory.vouchers!.length; i++) {
-            historychecked.add(hischecked(
-                data: detailhistory.vouchers![i], datachecked: false));
-          }
-        });
+        setState(() {});
 
         return historychecked;
       }

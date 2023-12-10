@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:sdt_evd/changePassword.dart';
 import 'package:sdt_evd/login.dart';
 import 'package:sdt_evd/models/Fullaccess.dart';
 import 'package:sdt_evd/models/User.dart';
@@ -9,6 +10,7 @@ import 'constants.dart';
 import 'Rememberme.dart';
 import 'package:http/http.dart' as http;
 import 'main.dart';
+import 'settings.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -22,7 +24,7 @@ class _ProfileState extends State<Profile> {
 
   late fulluser listfulluser;
   late Future<fulluser?> fetchData;
-
+  String selectedText = "Change password";
   @override
   void initState() {
     fetchData = _sendrequest();
@@ -32,6 +34,34 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Profile',
+            style: TextStyle(
+                fontSize: 23, color: Colors.blue, fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        // leading: IconButton(
+        //   icon: Icon(Icons.info, size: 27, color: Colors.blue),
+        //   onPressed: () {
+        //     Navigator.of(context).push(MaterialPageRoute(
+        //       builder: (context) => VoucherSaleSummary(),
+        //     ));
+        //   },
+        // ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              size: 27,
+              color: Colors.blue,
+            ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => settings(),
+              ));
+            },
+          ),
+        ],
+      ),
       body: FutureBuilder<fulluser?>(
         future: fetchData,
         builder: (BuildContext context, AsyncSnapshot<fulluser?> snapshot) {
@@ -45,7 +75,7 @@ class _ProfileState extends State<Profile> {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.35,
+                  height: MediaQuery.of(context).size.height * 0.30,
                   decoration: const BoxDecoration(color: Colors.blue),
                   child: Column(
                     children: [
@@ -201,51 +231,19 @@ class _ProfileState extends State<Profile> {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.35,
+                  height: MediaQuery.of(context).size.height * 0.30,
                   decoration: const BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage("assest/download.jpg"))),
+                          image: AssetImage("assest/download.jpg"),
+                          fit: BoxFit.fill)),
                   child: Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                          child: GestureDetector(
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Icon(
-                                    Icons.logout,
-                                    semanticLabel: "Logout",
-                                  ),
-                                  Text(
-                                    "Logout",
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 17),
-                                  )
-                                ],
-                              ),
-                            ),
-                            onTap: () async {
-                              await SharedPreferencesHelper
-                                  .clearLoginCredentials();
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Login()));
-                            },
-                          ),
-                        ),
-                      ),
-                      Text(
-                        'Profile',
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 23,
-                            fontWeight: FontWeight.bold),
-                      ),
+                      // await SharedPreferencesHelper
+                      //                 .clearLoginCredentials();
+                      //             Navigator.of(context).pop();
+                      //             Navigator.of(context).push(MaterialPageRoute(
+                      //                 builder: (context) => Login()));
+
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                         child: Icon(
@@ -377,7 +375,8 @@ class _ProfileState extends State<Profile> {
     print("the access token ${lo.accessToken}");
     try {
       var response = await http.get(
-        Uri.parse("http://137.184.214.159:8000/api/v1/users/${l.username}"),
+        Uri.parse(
+            "https://evdc-api.onrender.com/api/v1/users/${l.username}"), //https://evdc-api.onrender.com/api/v1/users/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",
@@ -393,6 +392,8 @@ class _ProfileState extends State<Profile> {
         print("total count is ${listfulluser.firstName}");
         print(listfulluser.phoneNumber);
         print(listfulluser.printWalletBalance);
+
+        setfulluser(listfulluser);
 
         return listfulluser;
       }

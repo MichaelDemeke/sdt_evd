@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
-import 'package:sdt_evd/Bluetooth.dart';
+import 'package:sdt_evd/Bluetooth copy.dart';
 import 'package:sdt_evd/Order.dart';
 import 'package:sdt_evd/Voucher_Sale_Summary.dart';
 import 'package:sdt_evd/constants.dart';
@@ -311,7 +311,7 @@ class _WalletState extends State<Wallet> {
     try {
       var response = await http.get(
         Uri.parse(
-            "http://137.184.214.159:8000/api/v1/vouchers/summary/?status=wallet"),
+            "https://evdc-api.onrender.com/api/v1/vouchers/summary/?status=wallet"), //https://evdc-api.onrender.com/api/v1/vouchers/summary/?status=wallet
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",
@@ -347,10 +347,12 @@ class _WalletState extends State<Wallet> {
         return true;
       } else {
         print(response.statusCode);
+        print("XXXXXXXXXXX ELSE");
         return false;
       }
     } catch (e) {
       print(" Error ${e}");
+      print("vvvvvvvvvvv catch");
       return false;
     }
   }

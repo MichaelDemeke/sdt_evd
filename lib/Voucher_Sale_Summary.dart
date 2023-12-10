@@ -282,7 +282,8 @@ class _VoucherSaleSummaryState extends State<VoucherSaleSummary> {
   Future<bool> sendrequest() async {
     // String url =
     //     "https://bored-calf-leotard.cyclic.app/api/v1/print_queues/summary/?printed_date_from=2023-11-05T08%3A01%3A52.393791&printed_date_to=2023-11-06T08%3A01%3A52.393863";
-    String url1 = "http://137.184.214.159:8000/api/v1/print_queues/summary/";
+    String url1 =
+        "https://evdc-api.onrender.com/api/v1/print_queues/summary/"; //https://evdc-api.onrender.com/api/v1/print_queues/summary/
     User lo = userget;
     print("the access token ${lo.accessToken}");
     try {

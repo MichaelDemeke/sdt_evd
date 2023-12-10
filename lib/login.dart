@@ -234,7 +234,8 @@ class _LoginState extends State<Login> {
       print(controller.text);
       print(controller1.text);
       var response = await http.post(
-        Uri.parse("http://137.184.214.159:8000/api/v1/auth/login"),
+        Uri.parse(
+            "https://evdc-api.onrender.com/api/v1/auth/login"), // https://evdc-api.onrender.com/api/v1/auth/login
         body: {"username": controller.text, "password": controller1.text},
       );
       var data = jsonDecode(response.body);
@@ -248,6 +249,12 @@ class _LoginState extends State<Login> {
         listuser = User.fromJson(data) as User;
         setuser(listuser);
         SharedPreferencesHelper.setRememberMe(ischecked);
+
+        setRememberMe(rememberMe(
+            username: controller.text,
+            password: controller1.text,
+            token: listuser.accessToken!,
+            tokenType: listuser.tokenType!));
 
         if (ischecked) {
           print("it is checked");
@@ -322,7 +329,8 @@ class _LoginState extends State<Login> {
 
     try {
       var response = await http.get(
-        Uri.parse("http://137.184.214.159:8000/api/v1/auth/users/me/"),
+        Uri.parse(
+            "https://evdc-api.onrender.com/api/v1/auth/users/me/"), //https://evdc-api.onrender.com/api/v1/auth/users/me/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",
