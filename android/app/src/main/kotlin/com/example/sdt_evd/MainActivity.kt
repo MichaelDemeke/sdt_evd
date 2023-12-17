@@ -1,6 +1,7 @@
 package com.example.sdt_evd
 
 import android.app.Activity
+import android.Manifest
 import android.app.Instrumentation.ActivityResult
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -16,6 +17,9 @@ import android.os.Build.VERSION_CODES
 import android.content.Intent
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding.OnSaveInstanceStateListener
 import io.flutter.plugins.GeneratedPluginRegistrant
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 
 class MainActivity: FlutterActivity() {
@@ -35,11 +39,35 @@ class MainActivity: FlutterActivity() {
     }
 
     private fun scanBluetoothDevices(): List<BluetoothDevice> {
-        // Implement your Bluetooth scanning logic here
-        // Return a list of Bluetooth devices as strings
-        // Example:
-       // val devices = listOf("Device 1", "Device 2", "Device 3")
+        val bluetoothDevices: MutableList<BluetoothDevice> = mutableListOf()
 
-        //return
+        // Check if the necessary permission is granted
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.BLUETOOTH
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+
+            // Check if Bluetooth is supported on the device
+            if (bluetoothAdapter != null) {
+                // Check if Bluetooth is enabled
+                if (bluetoothAdapter.isEnabled) {
+                    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter.bondedDevices
+
+                    pairedDevices?.forEach { device ->
+                        bluetoothDevices.add(device)
+                    }
+                } else {
+                    // Bluetooth is disabled, handle accordingly
+                }
+            } else {
+                // Bluetooth is not supported on the device, handle accordingly
+            }
+        } else {
+            // Permission is not granted, handle accordingly
+        }
+
+        return bluetoothDevices
     }
 }

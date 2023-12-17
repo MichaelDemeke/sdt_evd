@@ -40,13 +40,14 @@ class _bluetoothState extends State<bluetooth> {
 
   @override
   void initState() {
-    _scanBluetoothDevices();
+    // _scanBluetoothDevices();
 
     print("print copy");
     //  checkifdeviceisconnected();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        initPrinter();
+        // initPrinter();
+        _scanBluetoothDevices();
       },
     );
 
@@ -239,8 +240,9 @@ class _bluetoothState extends State<bluetooth> {
                   ),
                 ),
                 onTap: () async {
-                  startscan();
+                  // startscan();
                   // initPrinter();
+                  _scanBluetoothDevices();
                 },
               )),
             ),
