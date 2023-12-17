@@ -274,7 +274,7 @@ class _changePasswordState extends State<changePassword> {
       print(controller1.text);
       var response = await http.patch(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/users/api/v1/users/"), // https://evdc-api.onrender.com/api/v1/users/
+            "http://137.184.214.159:8000/api/v1/users/api/v1/users/"), // http://137.184.214.159:8000/api/v1/users/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",

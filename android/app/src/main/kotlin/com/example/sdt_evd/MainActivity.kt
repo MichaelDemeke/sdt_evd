@@ -23,9 +23,11 @@ import androidx.core.content.ContextCompat
 
 
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "bluetooth_channel"
+    private val CHANNEL = "michael.com/bluetooth"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+
+
         GeneratedPluginRegistrant.registerWith(flutterEngine)
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->

@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
-import 'package:sdt_evd/Bluetooth copy.dart';
 import 'package:sdt_evd/Order.dart';
 import 'package:sdt_evd/Voucher_Sale_Summary.dart';
 import 'package:sdt_evd/constants.dart';
+import 'package:sdt_evd/epsonblu.dart';
 import 'package:sdt_evd/models/Fullaccess.dart';
 import 'package:sdt_evd/models/User.dart';
 import 'package:http/http.dart' as http;
@@ -102,7 +102,7 @@ class _WalletState extends State<Wallet> {
             ),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => bluetooth(),
+                builder: (context) => epson(),
               ));
             },
           ),
@@ -311,7 +311,7 @@ class _WalletState extends State<Wallet> {
     try {
       var response = await http.get(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/vouchers/summary/?status=wallet"), //https://evdc-api.onrender.com/api/v1/vouchers/summary/?status=wallet
+            "http://137.184.214.159:8000/api/v1/vouchers/summary/?status=wallet"), //http://137.184.214.159:8000/api/v1/vouchers/summary/?status=wallet
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",

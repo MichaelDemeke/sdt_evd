@@ -31,7 +31,9 @@ class _bluetoothState extends State<bluetooth> {
       final List<BluetoothDevice> devices =
           await bluetoothscanner.invokeMethod('scanBluetoothDevices');
       setState(() {
+        print(devices.length);
         _device = devices.cast<bluetooth_print.BluetoothDevice>();
+        
       });
     } catch (e) {
       print('Error scanning Bluetooth devices: $e');

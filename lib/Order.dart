@@ -493,7 +493,7 @@ class _OrderState extends State<Order> {
     try {
       var response = await http.post(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/print_queues/"), // https://evdc-api.onrender.com/
+            "http://137.184.214.159:8000/api/v1/print_queues/"), // http://137.184.214.159:8000/
         body: json.encode({"face_value": faceValue, "quantity": quantity}),
         headers: {
           'Content-type': 'application/json',
@@ -538,7 +538,7 @@ class _OrderState extends State<Order> {
     try {
       var response = await http.get(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/auth/users/me/"), // https://evdc-api.onrender.com/api/v1/auth/users/me/
+            "http://137.184.214.159:8000/api/v1/auth/users/me/"), // http://137.184.214.159:8000/api/v1/auth/users/me/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",
@@ -576,7 +576,7 @@ class _OrderState extends State<Order> {
     try {
       var response = await http.get(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/vouchers/summary/?status=wallet"), //https://evdc-api.onrender.com/api/v1/vouchers/summary/?status=wallet
+            "http://137.184.214.159:8000/api/v1/vouchers/summary/?status=wallet"), //http://137.184.214.159:8000/api/v1/vouchers/summary/?status=wallet
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",

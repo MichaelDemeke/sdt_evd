@@ -279,7 +279,7 @@ class _PrintedState extends State<Printed> {
     try {
       var response = await http.get(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/print_queues/?voucher_limit=0&skip=0"), //https://evdc-api.onrender.com/
+            "http://137.184.214.159:8000/api/v1/print_queues/?voucher_limit=0&skip=0"), //http://137.184.214.159:8000/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",

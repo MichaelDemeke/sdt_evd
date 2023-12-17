@@ -533,8 +533,8 @@ class _PrinteddetailState extends State<Printeddetail> {
     try {
       var response = await http.get(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/print_queues/${widget.general.id}?voucher_skip=0&voucher_limit=${widget.general.quantity}"), //https://evdc-api.onrender.com/
-        // https://evdc-api.onrender.com/api/v1/print_queues/${widget.general.id}?voucher_skip=${_currentMax}&voucher_limit=10
+            "http://137.184.214.159:8000/api/v1/print_queues/${widget.general.id}?voucher_skip=0&voucher_limit=${widget.general.quantity}"), //http://137.184.214.159:8000/
+        // http://137.184.214.159:8000/api/v1/print_queues/${widget.general.id}?voucher_skip=${_currentMax}&voucher_limit=10
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",

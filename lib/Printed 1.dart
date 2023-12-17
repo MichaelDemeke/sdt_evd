@@ -46,7 +46,7 @@ class _Printed1State extends State<Printed1> {
     history temphis;
     var response = await http.get(
       Uri.parse(
-          'https://evdc-api.onrender.com/api/v1/print_queues/?skip=$_currentMax&limit=10'),
+          'http://137.184.214.159:8000/api/v1/print_queues/?skip=$_currentMax&limit=10'),
       headers: {
         'Content-type': 'application/json',
         "Accept": "application/json",

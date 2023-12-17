@@ -376,7 +376,7 @@ class _ProfileState extends State<Profile> {
     try {
       var response = await http.get(
         Uri.parse(
-            "https://evdc-api.onrender.com/api/v1/users/${l.username}"), //https://evdc-api.onrender.com/api/v1/users/
+            "http://137.184.214.159:8000/api/v1/users/${l.username}"), //http://137.184.214.159:8000/api/v1/users/
         headers: {
           'Content-type': 'application/json',
           "Accept": "application/json",
