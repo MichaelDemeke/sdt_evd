@@ -351,15 +351,16 @@ class _epsonState extends State<epson> {
     //bytes += generator.setGlobalFont(PosFontType.fontA);
     bytes += generator.reset();
 
-    ByteData data = await rootBundle.load('assest/logo sdt.jpg');
+    ByteData data = await rootBundle.load('assest/logo.png');
     Uint8List bytesImg = data.buffer.asUint8List();
+
     final Uint8List compressedBytes =
         await FlutterImageCompress.compressWithList(
       bytesImg,
       minHeight: 80,
       minWidth: 20,
     );
-    img.Image? image = img.decodeImage(compressedBytes);
+    final image = img.decodeImage(bytesImg);
 
     print("bbbbbbbbbbbbbbbb does it have data ${image != null}");
 
